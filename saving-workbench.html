@@ -1260,13 +1260,12 @@
 
       const savePlan = () => {
         const name = root.querySelector('[data-plan-name-input]').value.trim();
-        const monthly = Math.round(Number(root.querySelector('[data-plan-monthly-input]').value) || 0);
+        const monthly = Math.max(0, Math.round(Number(root.querySelector('[data-plan-monthly-input]').value) || 0));
         const currentSaved = Math.round(Number(root.querySelector('[data-plan-current-saved-input]').value) || 0);
         const start = root.querySelector('[data-plan-start-input]').value;
         const error = root.querySelector('[data-plan-error]');
         if (!name) { error.textContent = '请填写计划名称。'; return; }
         if (!start) { error.textContent = '请选择开始月份。'; return; }
-        if (monthly <= 0) { error.textContent = '每月计划金额需要大于0。'; return; }
         if (currentSaved < 0) { error.textContent = '之前已攒金额不能小于0。'; return; }
 
         const existing = new Map(months.map(month => [month.key, month]));
