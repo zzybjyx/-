@@ -1,5 +1,13 @@
 <div id="saving-workbench">
   <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #f8faff;
+    }
+
     #saving-workbench {
       --sd-page: light-dark(#edf4ff, #101725);
       --sd-phone: light-dark(#f8faff, #151c2b);
@@ -20,10 +28,10 @@
       color-scheme: light dark;
       color: var(--sd-text);
       font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
-      display: flex;
-      justify-content: center;
-      padding: 14px 0;
-      background: transparent;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--sd-phone);
     }
 
     #saving-workbench * { box-sizing: border-box; }
@@ -33,19 +41,15 @@
     #saving-workbench textarea { font: inherit; }
 
     #saving-workbench .sd-phone {
-      width: min(390px, 100%);
-      min-height: 720px;
-      overflow: hidden;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
       position: relative;
       background: var(--sd-phone);
-      border: 1px solid var(--sd-line);
-      border-radius: 28px;
-      box-shadow: 0 16px 50px var(--sd-shadow);
     }
 
     #saving-workbench .sd-status {
-      min-height: 36px;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: space-between;
       padding: 8px 22px 0;
@@ -62,7 +66,12 @@
 
     #saving-workbench .sd-status-icons svg { width: 14px; height: 14px; }
 
-    #saving-workbench .sd-screen { display: none; padding: 8px 18px 98px; }
+    #saving-workbench .sd-screen {
+      display: none;
+      width: min(100%, 680px);
+      margin: 0 auto;
+      padding: max(14px, env(safe-area-inset-top)) 18px calc(94px + env(safe-area-inset-bottom));
+    }
     #saving-workbench .sd-screen.is-active { display: block; }
 
     #saving-workbench .sd-topbar {
@@ -452,7 +461,7 @@
     #saving-workbench .sd-month-not-started { color: var(--sd-muted); font-size: 11px; }
 
     #saving-workbench .sd-modal-overlay {
-      position: absolute;
+      position: fixed;
       z-index: 20;
       inset: 0;
       display: none;
@@ -515,14 +524,15 @@
     #saving-workbench .sd-form-note { color: var(--sd-muted); font-size: 11px; margin-top: 7px; }
 
     #saving-workbench .sd-bottom-nav {
-      position: absolute;
+      position: fixed;
+      z-index: 18;
       left: 0;
       right: 0;
       bottom: 0;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
-      padding: 10px 12px 18px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
       background: color-mix(in srgb, var(--sd-phone) 94%, transparent);
       border-top: 1px solid var(--sd-line);
       backdrop-filter: blur(12px);
@@ -545,7 +555,7 @@
     #saving-workbench .sd-bottom-nav.is-hidden { display: none; }
 
     #saving-workbench .sd-toast {
-      position: absolute;
+      position: fixed;
       z-index: 5;
       left: 50%;
       bottom: 88px;
@@ -563,8 +573,7 @@
     #saving-workbench .sd-toast.is-showing { opacity: 1; transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 430px) {
-      #saving-workbench { padding: 0; }
-      #saving-workbench .sd-phone { width: 100%; border-radius: 22px; min-height: 700px; }
+      #saving-workbench .sd-screen { padding-left: 14px; padding-right: 14px; }
       #saving-workbench .sd-category-item { grid-template-columns: minmax(0, 1fr) 86px 32px; gap: 6px; }
       #saving-workbench .sd-month-table-head { grid-template-columns: 48px 52px minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
       #saving-workbench .sd-month-row { grid-template-columns: 48px 52px minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
@@ -589,22 +598,22 @@
         <div class="sd-hero-head">
           <div class="sd-hero-copy">
             <span class="sd-hero-label">计划总目标</span>
-            <strong class="sd-hero-value" data-home-year-target>¥72,000</strong>
+            <strong class="sd-hero-value" data-home-year-target>¥0</strong>
           </div>
         </div>
-        <div class="sd-hero-progress" role="progressbar" aria-label="今年攒钱进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63"><span data-home-progress style="width:62.5%"></span></div>
+        <div class="sd-hero-progress" role="progressbar" aria-label="今年攒钱进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-home-progress style="width:0"></span></div>
         <div class="sd-hero-stats">
           <div class="sd-hero-stat">
             <span>应攒</span>
-            <strong data-home-due>¥48,000</strong>
+            <strong data-home-due>¥0</strong>
           </div>
           <div class="sd-hero-stat">
             <span>已攒</span>
-            <strong data-total-saved>¥45,000</strong>
+            <strong data-total-saved>¥0</strong>
           </div>
           <div class="sd-hero-stat is-shortfall">
             <span>未达标</span>
-            <strong data-home-gap>¥3,000</strong>
+            <strong data-home-gap>¥0</strong>
           </div>
         </div>
       </div>
@@ -629,11 +638,11 @@
       <div class="sd-income-saving">
         <div class="sd-income-saving-field">
           <label class="sd-field-label" for="sd-salary">本月到账工资</label>
-          <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-salary" type="number" min="0" step="100" value="15000" inputmode="decimal"></div>
+          <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-salary" type="number" min="0" step="100" value="0" inputmode="decimal"></div>
         </div>
         <div class="sd-income-saving-field">
           <label class="sd-field-label" for="sd-savings">攒钱</label>
-          <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-savings" data-savings-amount type="number" min="0" step="100" value="6000" inputmode="decimal"></div>
+          <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-savings" data-savings-amount type="number" min="0" step="100" value="0" inputmode="decimal"></div>
         </div>
       </div>
 
@@ -654,15 +663,15 @@
         <div class="sd-plan-target-head">
           <div class="sd-plan-target-copy">
             <span>当前已攒</span>
-            <strong data-plan-total>¥45,000</strong>
+            <strong data-plan-total>¥0</strong>
           </div>
           <button class="sd-icon-button" type="button" aria-label="编辑攒钱计划" data-open-plan-modal><i data-lucide="pencil" aria-hidden="true"></i></button>
         </div>
-        <div class="sd-progress" role="progressbar" aria-label="计划目标完成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63"><span data-plan-progress style="width:62.5%"></span></div>
+        <div class="sd-progress" role="progressbar" aria-label="计划目标完成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-plan-progress style="width:0"></span></div>
         <div class="sd-plan-stats">
-          <div class="sd-plan-stat is-brand"><span data-plan-target-label>计划总目标</span><strong data-year-target>¥72,000</strong></div>
-          <div class="sd-plan-stat"><span>距目标</span><strong data-plan-remaining>¥27,000</strong></div>
-          <div class="sd-plan-stat is-brand"><span>每月计划</span><strong data-plan-monthly>¥6,000</strong></div>
+          <div class="sd-plan-stat is-brand"><span data-plan-target-label>计划总目标</span><strong data-year-target>¥0</strong></div>
+          <div class="sd-plan-stat"><span>距目标</span><strong data-plan-remaining>¥0</strong></div>
+          <div class="sd-plan-stat is-brand"><span>每月计划</span><strong data-plan-monthly>¥0</strong></div>
         </div>
       </div>
 
@@ -685,11 +694,11 @@
         <div class="sd-income-saving">
           <div class="sd-income-saving-field">
             <label class="sd-field-label" for="sd-month-salary">本月到账工资</label>
-            <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-month-salary" data-month-salary type="number" min="0" step="100" value="15000" inputmode="decimal"></div>
+            <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-month-salary" data-month-salary type="number" min="0" step="100" value="0" inputmode="decimal"></div>
           </div>
           <div class="sd-income-saving-field">
             <label class="sd-field-label" for="sd-month-savings">攒钱</label>
-            <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-month-savings" data-month-savings-amount type="number" min="0" step="100" value="6000" inputmode="decimal"></div>
+            <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-month-savings" data-month-savings-amount type="number" min="0" step="100" value="0" inputmode="decimal"></div>
           </div>
         </div>
 
@@ -720,7 +729,7 @@
         </div>
         <div class="sd-modal-grid">
           <label class="sd-field"><span class="sd-field-label">计划名称</span><input class="sd-input" type="text" maxlength="24" data-plan-name-input value="自由计划"></label>
-          <label class="sd-field"><span class="sd-field-label">每月打算存</span><input class="sd-input" type="number" min="0" step="100" data-plan-monthly-input value="6000"></label>
+          <label class="sd-field"><span class="sd-field-label">每月打算存</span><input class="sd-input" type="number" min="0" step="100" data-plan-monthly-input value="0"></label>
           <label class="sd-field"><span class="sd-field-label">之前已攒金额</span><input class="sd-input" type="number" min="0" step="100" data-plan-current-saved-input value="0"></label>
           <div class="sd-modal-dates">
             <label class="sd-field"><span class="sd-field-label">开始月份</span><input class="sd-input" type="month" data-plan-start-input value="2026-01"></label>
@@ -769,34 +778,21 @@
       })();
       const STORAGE_DB = 'saving-workbench';
       const STORAGE_STORE = 'state';
-      const STORAGE_KEY = 'app-state';
-      const STORAGE_VERSION = 1;
+      const STORAGE_KEY = 'app-state-v2';
+      const STORAGE_VERSION = 2;
       let saveTimer;
       let dbPromise;
       let editingMonthIndex = 0;
       let allocationMonthIndex = 0;
-      let plan = { name: '自由计划', start: '2026-01', monthlyTarget: 6000, currentSaved: 0 };
+      let plan = { name: '自由计划', start: currentKey, monthlyTarget: 0, currentSaved: 0 };
 
-      let months = [
-        { key: '2026-01', target: 6000, saved: 6000, reason: '', extra: 0, note: '' },
-        { key: '2026-02', target: 6000, saved: 5500, reason: '临时牙科治疗', extra: 500, note: '' },
-        { key: '2026-03', target: 6000, saved: 6500, reason: '', extra: 0, note: '' },
-        { key: '2026-04', target: 6000, saved: 6000, reason: '', extra: 0, note: '' },
-        { key: '2026-05', target: 6000, saved: 3000, reason: '更换手机', extra: 3000, note: '' },
-        { key: '2026-06', target: 6000, saved: 7000, reason: '', extra: 0, note: '' },
-        { key: '2026-07', target: 6000, saved: 6000, reason: '', extra: 0, note: '' },
-        { key: '2026-08', target: 6000, saved: 5000, reason: '朋友婚礼红包', extra: 1000, note: '' },
-        { key: '2026-09', target: 6000, saved: 0, reason: '', extra: 0, note: '' },
-        { key: '2026-10', target: 6000, saved: 0, reason: '', extra: 0, note: '' },
-        { key: '2026-11', target: 6000, saved: 0, reason: '', extra: 0, note: '' },
-        { key: '2026-12', target: 6000, saved: 0, reason: '', extra: 0, note: '' }
-      ];
+      let months = [];
 
       const defaultCategories = [
-        { name: '攒钱', amount: 6000, savings: true, fixed: true },
-        { name: '自由消费', amount: 1500, savings: false, fixed: true, freeSpending: true },
-        { name: '替尔泊肽用途', amount: 2500, savings: false, fixed: false },
-        { name: '租房', amount: 5000, savings: false, fixed: false }
+        { name: '攒钱', amount: 0, savings: true, fixed: true },
+        { name: '自由消费', amount: 0, savings: false, fixed: true, freeSpending: true },
+        { name: '替尔泊肽用途', amount: 0, savings: false, fixed: false },
+        { name: '租房', amount: 0, savings: false, fixed: false }
       ];
       const copyObject = value => JSON.parse(JSON.stringify(value));
       const copyCategories = items => items.map(item => ({ ...item }));
@@ -868,7 +864,7 @@
         reason: String(month.reason || ''),
         extra: Math.max(0, Math.round(Number(month.extra) || 0)),
         note: String(month.note || ''),
-        salary: Number.isFinite(Number(month.salary)) ? Math.round(Number(month.salary) || 0) : 15000,
+        salary: Number.isFinite(Number(month.salary)) ? Math.round(Number(month.salary) || 0) : 0,
         allocations: month.allocations?.map(item => ({
           ...item,
           name: String(item?.name || ''),
@@ -1043,7 +1039,7 @@
           const allocationItems = month.allocations?.length ? copyCategories(month.allocations) : copyCategories(defaultCategories);
           const savings = allocationItems.find(isSavingsCategory);
           if (savings) savings.amount = month.saved;
-          recalculateFreeSpending(allocationItems, month.salary ?? 15000);
+          recalculateFreeSpending(allocationItems, month.salary ?? 0);
           allocationItems.filter(item => !isSavingsCategory(item)).forEach(item => {
             const name = item.name || '未命名用途';
             usageTotals.set(name, (usageTotals.get(name) || 0) + (Number(item.amount) || 0));
@@ -1125,7 +1121,7 @@
           freeSpending,
           ...copied.filter(item => item !== savings && item !== freeSpending && !isSavingsCategory(item))
         ];
-        recalculateFreeSpending(result, month.salary ?? 15000);
+        recalculateFreeSpending(result, month.salary ?? 0);
         return result;
       };
 
@@ -1151,7 +1147,7 @@
         allocationMonthIndex = Math.max(0, Math.min(months.length - 1, Number(index) || 0));
         const month = months[allocationMonthIndex];
         categories.splice(0, categories.length, ...allocationCategoriesFor(month));
-        root.querySelector('#sd-salary').value = month.salary ?? 15000;
+        root.querySelector('#sd-salary').value = month.salary ?? 0;
         renderCategories();
         renderAllocationMonthPicker();
       };
@@ -1211,7 +1207,7 @@
         root.querySelector('[data-edit-month-label]').textContent = monthName(month.key, true);
         root.querySelector('[data-edit-title]').textContent = `${month.key > currentKey ? '设置' : '补记'}${monthName(month.key)}攒钱`;
         editingCategories = allocationCategoriesFor(month);
-        root.querySelector('[data-month-salary]').value = month.salary ?? 15000;
+        root.querySelector('[data-month-salary]').value = month.salary ?? 0;
         renderMonthCategories();
         const overlay = root.querySelector('[data-month-modal]');
         overlay.classList.add('is-open');
@@ -1300,7 +1296,7 @@
 
       const resetPlan = () => {
         closeResetConfirm();
-        plan = { name: '自由计划', start: currentKey, monthlyTarget: 6000, currentSaved: 0 };
+        plan = { name: '自由计划', start: currentKey, monthlyTarget: 0, currentSaved: 0 };
         months = makeMonthKeys(plan.start).map(key => ({
           key,
           target: plan.monthlyTarget,

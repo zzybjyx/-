@@ -1,4 +1,4 @@
-const CACHE_NAME = 'saving-workbench-v1';
+const CACHE_NAME = 'saving-workbench-v2';
 const ASSETS_TO_CACHE = [
   './index.html',
   './saving-workbench-prototype.html',
@@ -30,8 +30,13 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
 
   event.respondWith((async () => {
-    const cached = await caches.match(request);
-    if (cached) return cached;
+    const url = new URL(request.url);
+    const isPageRequest = request.mode === 'navigate' || url.pathname.endsWith('.html');
+
+    if (!isPageRequest) {
+      const cached = await caches.match(request);
+      if (cached) return cached;
+    }
 
     try {
       const networkResponse = await fetch(request);
@@ -41,6 +46,8 @@ self.addEventListener('fetch', event => {
       }
       return networkResponse;
     } catch {
+      const cached = await caches.match(request);
+      if (cached) return cached;
       const fallback = await caches.match(OFFLINE_FALLBACK);
       return fallback || new Response('离线不可用，请连接网络后再试', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
