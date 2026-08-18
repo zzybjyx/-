@@ -1,0 +1,1522 @@
+<div id="saving-workbench">
+  <style>
+    #saving-workbench {
+      --sd-page: light-dark(#edf4ff, #101725);
+      --sd-phone: light-dark(#f8faff, #151c2b);
+      --sd-surface: light-dark(#ffffff, #20293a);
+      --sd-surface-soft: light-dark(#edf3ff, #263249);
+      --sd-text: light-dark(#162033, #edf3ff);
+      --sd-muted: light-dark(#6c7890, #a9b5ca);
+      --sd-line: light-dark(#dbe4f3, #34415a);
+      --sd-brand: light-dark(#246bfd, #75a7ff);
+      --sd-brand-on: light-dark(#ffffff, #0f1b33);
+      --sd-brand-soft: light-dark(#e2ecff, #263d69);
+      --sd-hero-warn: light-dark(#ffd16b, #7d4308);
+      --sd-warn: light-dark(#a65b16, #f2b66f);
+      --sd-warn-soft: light-dark(#fff1df, #49331e);
+      --sd-danger: light-dark(#a6463d, #f19b91);
+      --sd-shadow: light-dark(rgba(31, 67, 135, 0.16), rgba(0, 0, 0, 0.34));
+      --sd-overlay: light-dark(rgba(20, 30, 50, 0.46), rgba(5, 9, 16, 0.7));
+      color-scheme: light dark;
+      color: var(--sd-text);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 14px 0;
+      background: transparent;
+    }
+
+    #saving-workbench * { box-sizing: border-box; }
+    #saving-workbench button,
+    #saving-workbench input,
+    #saving-workbench select,
+    #saving-workbench textarea { font: inherit; }
+
+    #saving-workbench .sd-phone {
+      width: min(390px, 100%);
+      min-height: 720px;
+      overflow: hidden;
+      position: relative;
+      background: var(--sd-phone);
+      border: 1px solid var(--sd-line);
+      border-radius: 28px;
+      box-shadow: 0 16px 50px var(--sd-shadow);
+    }
+
+    #saving-workbench .sd-status {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 22px 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--sd-muted);
+    }
+
+    #saving-workbench .sd-status-icons {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    #saving-workbench .sd-status-icons svg { width: 14px; height: 14px; }
+
+    #saving-workbench .sd-screen { display: none; padding: 8px 18px 98px; }
+    #saving-workbench .sd-screen.is-active { display: block; }
+
+    #saving-workbench .sd-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      margin-bottom: 12px;
+    }
+
+    #saving-workbench .sd-topbar-copy { display: grid; gap: 2px; }
+    #saving-workbench .sd-sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--sd-muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    #saving-workbench .sd-sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sd-brand); }
+    #saving-workbench .sd-sync-status[data-state="syncing"] { color: var(--sd-warn); }
+    #saving-workbench .sd-sync-status[data-state="saved"],
+    #saving-workbench .sd-sync-status[data-state="idle"] { color: var(--sd-muted); }
+    #saving-workbench .sd-sync-status[data-state="error"] { color: var(--sd-danger); }
+    #saving-workbench .sd-sync-status[data-state="syncing"] .sd-sync-dot { background: var(--sd-warn); }
+    #saving-workbench .sd-sync-status[data-state="error"] .sd-sync-dot { background: var(--sd-danger); }
+    #saving-workbench .sd-sync-status[data-state="syncing"] .sd-sync-dot { background: var(--sd-warn); }
+    #saving-workbench .sd-eyebrow { color: var(--sd-muted); font-size: 12px; }
+    #saving-workbench h1,
+    #saving-workbench h2,
+    #saving-workbench h3,
+    #saving-workbench p { margin: 0; }
+    #saving-workbench h1 { font-size: 22px; line-height: 1.25; font-weight: 500; }
+    #saving-workbench h2 { font-size: 17px; line-height: 1.3; font-weight: 500; }
+    #saving-workbench h3 { font-size: 14px; line-height: 1.35; font-weight: 500; }
+
+    #saving-workbench .sd-icon-button,
+    #saving-workbench .sd-back {
+      border: 0;
+      color: var(--sd-text);
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #saving-workbench .sd-icon-button {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: var(--sd-surface);
+      border: 1px solid var(--sd-line);
+    }
+
+    #saving-workbench .sd-back { gap: 6px; padding: 6px 0; }
+
+    #saving-workbench .sd-hero {
+      position: relative;
+      overflow: hidden;
+      background: var(--sd-surface);
+      color: var(--sd-text);
+      border: 1px solid var(--sd-line);
+      border-radius: 20px;
+      padding: 18px;
+      display: grid;
+      gap: 13px;
+      box-shadow: 0 10px 24px var(--sd-shadow);
+    }
+
+    #saving-workbench .sd-hero::after {
+      content: "";
+      position: absolute;
+      width: 118px;
+      height: 118px;
+      right: -42px;
+      top: -52px;
+      border-radius: 50%;
+      background: var(--sd-brand-soft);
+      opacity: 0.58;
+      pointer-events: none;
+    }
+    #saving-workbench .sd-screen[data-screen="home"] h1 { font-size: 28px; }
+    #saving-workbench .sd-hero-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
+    #saving-workbench .sd-hero-copy { display: grid; gap: 7px; }
+    #saving-workbench .sd-hero-label { color: var(--sd-muted); font-size: 12px; }
+    #saving-workbench .sd-hero-value { font-size: 30px; line-height: 1; font-weight: 500; letter-spacing: -0.04em; }
+    #saving-workbench .sd-hero-progress {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: var(--sd-surface-soft);
+    }
+    #saving-workbench .sd-hero-progress > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--sd-brand);
+      transition: width 220ms ease;
+    }
+    #saving-workbench .sd-hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    #saving-workbench .sd-hero-stat { min-width: 0; padding: 7px 9px; border: 1px solid var(--sd-line); border-radius: 11px; background: var(--sd-surface); }
+    #saving-workbench .sd-hero-stat span { display: block; margin-bottom: 4px; color: var(--sd-muted); font-size: 11px; }
+    #saving-workbench .sd-hero-stat strong { display: block; color: var(--sd-text); font-size: 16px; line-height: 1; font-weight: 500; white-space: nowrap; }
+    #saving-workbench .sd-hero-stat.is-shortfall span,
+    #saving-workbench .sd-hero-stat.is-shortfall strong { color: var(--sd-warn); }
+
+    #saving-workbench .sd-section { margin-top: 18px; }
+    #saving-workbench .sd-home-section { margin-top: 26px; }
+    #saving-workbench .sd-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    #saving-workbench .sd-section-hint { color: var(--sd-muted); font-size: 12px; }
+
+    #saving-workbench .sd-month-card,
+    #saving-workbench .sd-form-block,
+    #saving-workbench .sd-plan-summary {
+      background: var(--sd-surface);
+      border: 1px solid var(--sd-line);
+      border-radius: 18px;
+    }
+
+    #saving-workbench .sd-month-card { padding: 16px; }
+    #saving-workbench .sd-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    #saving-workbench .sd-big-number { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
+    #saving-workbench .sd-muted { color: var(--sd-muted); font-size: 12px; }
+    #saving-workbench .sd-gap { color: var(--sd-warn); font-size: 13px; font-weight: 500; }
+
+    #saving-workbench .sd-progress {
+      height: 8px;
+      margin-top: 14px;
+      background: var(--sd-surface-soft);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    #saving-workbench .sd-progress > span {
+      display: block;
+      width: 83.33%;
+      height: 100%;
+      background: var(--sd-brand);
+      border-radius: inherit;
+      transition: width 220ms ease;
+    }
+
+    #saving-workbench .sd-usage-summary {
+      overflow: hidden;
+      background: var(--sd-surface);
+      border: 1px solid var(--sd-line);
+      border-radius: 18px;
+    }
+    #saving-workbench .sd-usage-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      min-height: 46px;
+      padding: 11px 15px;
+      border-bottom: 1px solid var(--sd-line);
+      font-size: 13px;
+    }
+    #saving-workbench .sd-usage-row strong { font-weight: 500; white-space: nowrap; }
+    #saving-workbench .sd-usage-total { border-bottom: 0; color: var(--sd-muted); }
+    #saving-workbench .sd-usage-total strong { color: var(--sd-text); }
+
+    #saving-workbench .sd-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    #saving-workbench .sd-button {
+      min-height: 43px;
+      border-radius: 13px;
+      border: 1px solid var(--sd-line);
+      background: var(--sd-surface);
+      color: var(--sd-text);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    #saving-workbench .sd-button.sd-primary { background: var(--sd-brand); color: var(--sd-brand-on); border-color: transparent; }
+    #saving-workbench .sd-button.sd-full { width: 100%; }
+    #saving-workbench .sd-button:active { transform: translateY(1px); }
+    #saving-workbench .sd-file-input { position: absolute; inset: 0; width: 1px; height: 1px; opacity: 0; }
+    #saving-workbench .sd-inline-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+
+    #saving-workbench .sd-form-block { padding: 15px; margin-bottom: 12px; }
+    #saving-workbench .sd-field-label { display: block; color: var(--sd-muted); font-size: 12px; margin-bottom: 7px; }
+    #saving-workbench .sd-money-field { display: flex; align-items: center; gap: 7px; }
+    #saving-workbench .sd-money-field > span { color: var(--sd-muted); font-size: 18px; }
+    #saving-workbench .sd-input,
+    #saving-workbench .sd-select,
+    #saving-workbench .sd-textarea {
+      width: 100%;
+      border: 1px solid var(--sd-line);
+      border-radius: 12px;
+      background: var(--sd-phone);
+      color: var(--sd-text);
+      padding: 11px 12px;
+      outline: none;
+    }
+    #saving-workbench .sd-input:focus,
+    #saving-workbench .sd-select:focus,
+    #saving-workbench .sd-textarea:focus { border-color: var(--sd-brand); }
+    #saving-workbench .sd-salary-input { border: 0; background: transparent; font-size: 28px; font-weight: 500; padding: 0; }
+    #saving-workbench .sd-textarea { resize: vertical; min-height: 76px; }
+    #saving-workbench .sd-allocation-month-picker {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    #saving-workbench .sd-month-step,
+    #saving-workbench .sd-month-current {
+      min-height: 40px;
+      border: 0;
+      background: transparent;
+      color: var(--sd-text);
+      cursor: pointer;
+    }
+    #saving-workbench .sd-month-step {
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--sd-line);
+      border-radius: 12px;
+      background: var(--sd-surface);
+    }
+    #saving-workbench .sd-month-step:disabled { color: var(--sd-muted); opacity: 0.38; cursor: default; }
+    #saving-workbench .sd-month-current { background: transparent; color: var(--sd-text); font-weight: 500; }
+    #saving-workbench .sd-month-choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    #saving-workbench .sd-month-choice {
+      min-height: 46px;
+      border: 1px solid var(--sd-line);
+      border-radius: 12px;
+      background: var(--sd-surface);
+      color: var(--sd-text);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    #saving-workbench .sd-month-choice.is-selected { background: var(--sd-brand); color: var(--sd-brand-on); border-color: transparent; }
+
+    #saving-workbench .sd-income-saving {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+      padding: 15px;
+      margin-bottom: 18px;
+      background: var(--sd-surface);
+      border: 1px solid var(--sd-line);
+      border-radius: 16px;
+    }
+    #saving-workbench .sd-income-saving-field { min-width: 0; padding-right: 14px; }
+    #saving-workbench .sd-income-saving-field + .sd-income-saving-field {
+      padding-right: 0;
+      padding-left: 14px;
+      border-left: 1px solid var(--sd-line);
+    }
+    #saving-workbench .sd-income-saving .sd-money-field { min-width: 0; }
+    #saving-workbench .sd-income-saving .sd-money-field input { min-width: 0; }
+    #saving-workbench .sd-income-saving .sd-salary-input { font-size: 24px; }
+
+    #saving-workbench .sd-category-list { display: grid; gap: 9px; }
+    #saving-workbench .sd-category-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px 34px;
+      gap: 8px;
+      align-items: center;
+      background: var(--sd-surface);
+      border: 1px solid var(--sd-line);
+      border-radius: 15px;
+      padding: 9px;
+    }
+    #saving-workbench .sd-category-name-input { min-width: 0; padding: 8px 9px; }
+    #saving-workbench .sd-fixed-category-name {
+      min-width: 0;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 9px;
+      border: 1px solid var(--sd-line);
+      border-radius: 12px;
+      background: var(--sd-brand-soft);
+    }
+    #saving-workbench .sd-fixed-category-name strong { font-size: 13px; font-weight: 500; color: var(--sd-brand); }
+    #saving-workbench .sd-fixed-category-name small { font-size: 10px; color: var(--sd-brand); }
+    #saving-workbench .sd-category-amount { text-align: right; padding: 8px 9px; }
+    #saving-workbench .sd-category-amount[readonly] {
+      background: var(--sd-surface-soft);
+      color: var(--sd-brand);
+      font-weight: 500;
+      cursor: default;
+    }
+    #saving-workbench .sd-delete-button {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--sd-muted);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    #saving-workbench .sd-delete-button:hover { background: var(--sd-surface-soft); color: var(--sd-danger); }
+    #saving-workbench .sd-lock-icon { width: 34px; height: 34px; display: grid; place-items: center; color: var(--sd-brand); }
+    #saving-workbench .sd-add-button { margin-top: 9px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+
+    #saving-workbench .sd-plan-header { display: grid; gap: 10px; margin-bottom: 16px; }
+    #saving-workbench .sd-plan-header > .sd-eyebrow { color: var(--sd-text); font-size: 13px; }
+    #saving-workbench .sd-plan-summary {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+      box-shadow: 0 8px 22px var(--sd-shadow);
+    }
+    #saving-workbench .sd-plan-target-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    #saving-workbench .sd-plan-target-copy { display: grid; gap: 7px; }
+    #saving-workbench .sd-plan-target-copy span { color: var(--sd-muted); font-size: 12px; }
+    #saving-workbench .sd-plan-target-copy strong { font-size: 31px; line-height: 1; font-weight: 500; letter-spacing: -0.03em; }
+    #saving-workbench .sd-plan-summary .sd-progress { margin-top: 0; }
+    #saving-workbench .sd-plan-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding-top: 2px;
+    }
+    #saving-workbench .sd-plan-stat { min-width: 0; display: grid; gap: 5px; padding: 0 12px; border-left: 1px solid var(--sd-line); }
+    #saving-workbench .sd-plan-stat:first-child { padding-left: 0; border-left: 0; }
+    #saving-workbench .sd-plan-stat:last-child { padding-right: 0; }
+    #saving-workbench .sd-plan-stat span { color: var(--sd-muted); font-size: 11px; }
+    #saving-workbench .sd-plan-stat strong { font-size: 17px; line-height: 1.1; font-weight: 500; white-space: nowrap; }
+    #saving-workbench .sd-plan-stat.is-brand strong { color: var(--sd-brand); }
+
+    #saving-workbench .sd-month-table {
+      margin-left: -9px;
+      margin-right: -9px;
+      overflow: hidden;
+      border: 1px solid var(--sd-line);
+      border-radius: 16px;
+      background: var(--sd-surface);
+    }
+    #saving-workbench .sd-month-list { display: grid; gap: 0; }
+    #saving-workbench .sd-month-table-head {
+      display: grid;
+      grid-template-columns: 52px 56px minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      padding: 12px 8px 10px 10px;
+      border: 0;
+      border-bottom: 1px solid var(--sd-line);
+      background: var(--sd-surface-soft);
+      color: var(--sd-text);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    #saving-workbench .sd-month-row {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--sd-line);
+      background: transparent;
+      color: var(--sd-text);
+      display: grid;
+      grid-template-columns: 52px 56px minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      padding: 14px 8px 14px 7px;
+      border-left: 3px solid transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+    #saving-workbench .sd-month-row:last-child { border-bottom: 0; }
+    #saving-workbench .sd-month-table-head > :nth-child(2),
+    #saving-workbench .sd-month-row > :nth-child(2) { justify-self: center; text-align: center; }
+    #saving-workbench .sd-month-table-head > :nth-child(n+3),
+    #saving-workbench .sd-month-row > :nth-child(n+3) { justify-self: stretch; text-align: right; }
+    #saving-workbench .sd-month-row.is-current { border-left-color: var(--sd-brand); background: var(--sd-surface-soft); }
+    #saving-workbench .sd-month-row.is-current .sd-month-label { color: var(--sd-brand); }
+    #saving-workbench .sd-month-label { font-size: 13px; font-weight: 600; }
+    #saving-workbench .sd-month-amount { min-width: 0; font-size: 13px; white-space: nowrap; }
+    #saving-workbench .sd-month-progress-head,
+    #saving-workbench .sd-month-progress-amount { min-width: 0; display: grid; justify-items: end; gap: 2px; }
+    #saving-workbench .sd-month-progress-head small,
+    #saving-workbench .sd-month-progress-target { color: var(--sd-muted); font-size: 11px; font-weight: 400; white-space: nowrap; }
+    #saving-workbench .sd-month-progress-saved { font-size: 13px; white-space: nowrap; }
+    #saving-workbench .sd-month-check { color: var(--sd-brand); font-weight: 500; }
+    #saving-workbench .sd-month-extra { color: var(--sd-warn); font-weight: 500; }
+    #saving-workbench .sd-month-not-started { color: var(--sd-muted); font-size: 11px; }
+
+    #saving-workbench .sd-modal-overlay {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 106px 16px 24px;
+      background: var(--sd-overlay);
+      overflow-y: auto;
+    }
+    #saving-workbench .sd-modal-overlay.is-open { display: flex; }
+    #saving-workbench .sd-month-modal-overlay,
+    #saving-workbench .sd-plan-modal-overlay {
+      align-items: flex-end;
+      padding: 64px 0 0;
+    }
+    #saving-workbench .sd-modal {
+      width: 100%;
+      max-width: 354px;
+      background: var(--sd-surface);
+      color: var(--sd-text);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 18px 46px var(--sd-shadow);
+    }
+    #saving-workbench .sd-month-modal,
+    #saving-workbench .sd-plan-modal-sheet {
+      max-width: none;
+      max-height: calc(100% - 24px);
+      overflow-y: auto;
+      background: var(--sd-phone);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 18px 24px;
+    }
+    #saving-workbench .sd-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    #saving-workbench .sd-modal-copy { display: grid; gap: 3px; }
+    #saving-workbench .sd-modal-grid { display: grid; gap: 12px; }
+    #saving-workbench .sd-modal-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #saving-workbench .sd-modal-error { min-height: 16px; color: var(--sd-danger); font-size: 11px; }
+    #saving-workbench .sd-modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #saving-workbench .sd-reset-plan-button { color: var(--sd-danger); border-color: var(--sd-danger); background: transparent; }
+    #saving-workbench .sd-reset-confirm-overlay { z-index: 30; align-items: center; padding: 24px 16px; }
+    #saving-workbench .sd-reset-confirm-copy { margin: 0 0 18px; color: var(--sd-muted); font-size: 13px; line-height: 1.6; }
+    #saving-workbench .sd-confirm-reset-button { color: var(--sd-brand-on); border-color: var(--sd-danger); background: var(--sd-danger); }
+
+    #saving-workbench .sd-edit-summary {
+      background: var(--sd-brand-soft);
+      border-radius: 16px;
+      padding: 14px 15px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    #saving-workbench .sd-edit-gap { text-align: right; }
+    #saving-workbench .sd-edit-gap strong { display: block; color: var(--sd-warn); font-size: 19px; font-weight: 500; }
+    #saving-workbench .sd-edit-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #saving-workbench .sd-field { display: grid; gap: 7px; }
+    #saving-workbench .sd-field + .sd-field-wide { margin-top: 12px; }
+    #saving-workbench .sd-field-wide { display: grid; gap: 7px; margin-top: 12px; }
+    #saving-workbench .sd-form-note { color: var(--sd-muted); font-size: 11px; margin-top: 7px; }
+
+    #saving-workbench .sd-bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 10px 12px 18px;
+      background: color-mix(in srgb, var(--sd-phone) 94%, transparent);
+      border-top: 1px solid var(--sd-line);
+      backdrop-filter: blur(12px);
+    }
+    #saving-workbench .sd-nav-button {
+      border: 0;
+      background: transparent;
+      color: var(--sd-muted);
+      min-height: 52px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    #saving-workbench .sd-nav-button svg { width: 19px; height: 19px; }
+    #saving-workbench .sd-nav-button.is-active { color: var(--sd-brand); background: var(--sd-brand-soft); }
+    #saving-workbench .sd-bottom-nav.is-hidden { display: none; }
+
+    #saving-workbench .sd-toast {
+      position: absolute;
+      z-index: 5;
+      left: 50%;
+      bottom: 88px;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--sd-text);
+      color: var(--sd-phone);
+      padding: 9px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      white-space: nowrap;
+    }
+    #saving-workbench .sd-toast.is-showing { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 430px) {
+      #saving-workbench { padding: 0; }
+      #saving-workbench .sd-phone { width: 100%; border-radius: 22px; min-height: 700px; }
+      #saving-workbench .sd-category-item { grid-template-columns: minmax(0, 1fr) 86px 32px; gap: 6px; }
+      #saving-workbench .sd-month-table-head { grid-template-columns: 48px 52px minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
+      #saving-workbench .sd-month-row { grid-template-columns: 48px 52px minmax(0, 1fr) minmax(0, 1fr); gap: 6px; }
+    }
+  </style>
+
+  <main class="sd-phone" aria-label="攒钱手机应用原型">
+    <div class="sd-status" aria-hidden="true">
+      <span>9:41</span>
+      <span class="sd-status-icons"><i data-lucide="signal"></i><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span>
+    </div>
+
+    <section class="sd-screen is-active" data-screen="home" aria-label="首页">
+      <div class="sd-topbar">
+        <div class="sd-topbar-copy">
+          <h1 data-home-plan-name>自由计划</h1>
+        </div>
+        <div class="sd-sync-status" data-sync-status data-state="idle" role="status" aria-live="polite"><span class="sd-sync-dot" aria-hidden="true"></span><span data-sync-label>本机已保存</span></div>
+      </div>
+
+      <div class="sd-hero">
+        <div class="sd-hero-head">
+          <div class="sd-hero-copy">
+            <span class="sd-hero-label">计划总目标</span>
+            <strong class="sd-hero-value" data-home-year-target>¥72,000</strong>
+          </div>
+        </div>
+        <div class="sd-hero-progress" role="progressbar" aria-label="今年攒钱进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63"><span data-home-progress style="width:62.5%"></span></div>
+        <div class="sd-hero-stats">
+          <div class="sd-hero-stat">
+            <span>应攒</span>
+            <strong data-home-due>¥48,000</strong>
+          </div>
+          <div class="sd-hero-stat">
+            <span>已攒</span>
+            <strong data-total-saved>¥45,000</strong>
+          </div>
+          <div class="sd-hero-stat is-shortfall">
+            <span>未达标</span>
+            <strong data-home-gap>¥3,000</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="sd-section sd-home-section">
+        <div class="sd-section-head"><h2>其他用途明细</h2><span class="sd-section-hint">截至本月</span></div>
+        <div class="sd-usage-summary" data-home-usage-summary></div>
+        <div class="sd-inline-actions">
+          <button class="sd-button" type="button" data-export-data>导出备份</button>
+          <label class="sd-button"><span>导入备份</span><input class="sd-file-input" type="file" accept="application/json" data-import-input></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="sd-screen" data-screen="allocate" aria-label="工资分配">
+      <div class="sd-allocation-month-picker" aria-label="工资分配月份切换">
+        <button class="sd-month-step" type="button" aria-label="上一个月" data-allocation-prev><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+        <button class="sd-month-current" type="button" data-open-allocation-month-modal><span data-allocation-month-label>2026年8月</span></button>
+        <button class="sd-month-step" type="button" aria-label="下一个月" data-allocation-next><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+      </div>
+
+      <div class="sd-income-saving">
+        <div class="sd-income-saving-field">
+          <label class="sd-field-label" for="sd-salary">本月到账工资</label>
+          <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-salary" type="number" min="0" step="100" value="15000" inputmode="decimal"></div>
+        </div>
+        <div class="sd-income-saving-field">
+          <label class="sd-field-label" for="sd-savings">攒钱</label>
+          <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-savings" data-savings-amount type="number" min="0" step="100" value="6000" inputmode="decimal"></div>
+        </div>
+      </div>
+
+      <div class="sd-section-head"><h2>其他用途明细</h2><span class="sd-section-hint">自由消费自动计算</span></div>
+      <div class="sd-category-list" data-category-list></div>
+      <button class="sd-button sd-full sd-add-button" type="button" data-add-category><i data-lucide="plus" aria-hidden="true"></i><span>添加用途</span></button>
+      <div class="sd-section">
+        <button class="sd-button sd-primary sd-full" type="button" data-save-allocation>保存本月分配</button>
+      </div>
+    </section>
+
+    <section class="sd-screen" data-screen="plan" aria-label="十二个月攒钱计划">
+      <div class="sd-plan-header">
+        <span class="sd-eyebrow" data-plan-range>2026年1月—2026年12月</span>
+      </div>
+
+      <div class="sd-plan-summary">
+        <div class="sd-plan-target-head">
+          <div class="sd-plan-target-copy">
+            <span>当前已攒</span>
+            <strong data-plan-total>¥45,000</strong>
+          </div>
+          <button class="sd-icon-button" type="button" aria-label="编辑攒钱计划" data-open-plan-modal><i data-lucide="pencil" aria-hidden="true"></i></button>
+        </div>
+        <div class="sd-progress" role="progressbar" aria-label="计划目标完成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="63"><span data-plan-progress style="width:62.5%"></span></div>
+        <div class="sd-plan-stats">
+          <div class="sd-plan-stat is-brand"><span data-plan-target-label>计划总目标</span><strong data-year-target>¥72,000</strong></div>
+          <div class="sd-plan-stat"><span>距目标</span><strong data-plan-remaining>¥27,000</strong></div>
+          <div class="sd-plan-stat is-brand"><span>每月计划</span><strong data-plan-monthly>¥6,000</strong></div>
+        </div>
+      </div>
+
+      <div class="sd-section">
+        <div class="sd-section-head"><h2>每月进度</h2></div>
+        <div class="sd-month-table">
+          <div class="sd-month-table-head" aria-hidden="true"><span>月份</span><span>状态</span><span>已攒 / 应攒</span><span>本月实攒</span></div>
+          <div class="sd-month-list" data-month-list></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd-modal-overlay sd-month-modal-overlay" data-month-modal aria-hidden="true">
+      <section class="sd-modal sd-month-modal" role="dialog" aria-modal="true" aria-labelledby="sd-month-modal-title">
+        <div class="sd-modal-head">
+          <div class="sd-modal-copy"><span class="sd-eyebrow" data-edit-month-label>2026年8月</span><h2 id="sd-month-modal-title" data-edit-title>补记8月攒钱</h2></div>
+          <button class="sd-icon-button" type="button" aria-label="关闭弹窗" data-close-month-modal><i data-lucide="x" aria-hidden="true"></i></button>
+        </div>
+
+        <div class="sd-income-saving">
+          <div class="sd-income-saving-field">
+            <label class="sd-field-label" for="sd-month-salary">本月到账工资</label>
+            <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-month-salary" data-month-salary type="number" min="0" step="100" value="15000" inputmode="decimal"></div>
+          </div>
+          <div class="sd-income-saving-field">
+            <label class="sd-field-label" for="sd-month-savings">攒钱</label>
+            <div class="sd-money-field"><span>¥</span><input class="sd-input sd-salary-input" id="sd-month-savings" data-month-savings-amount type="number" min="0" step="100" value="6000" inputmode="decimal"></div>
+          </div>
+        </div>
+
+        <div class="sd-section-head"><h2>其他用途明细</h2><span class="sd-section-hint">自由消费自动计算</span></div>
+        <div class="sd-category-list" data-month-category-list></div>
+        <button class="sd-button sd-full sd-add-button" type="button" data-add-month-category><i data-lucide="plus" aria-hidden="true"></i><span>添加用途</span></button>
+        <div class="sd-section">
+          <button class="sd-button sd-primary sd-full" type="button" data-save-month>保存本月分配</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="sd-modal-overlay" data-allocation-month-modal aria-hidden="true">
+      <section class="sd-modal" role="dialog" aria-modal="true" aria-labelledby="sd-allocation-month-modal-title">
+        <div class="sd-modal-head">
+          <div class="sd-modal-copy"><span class="sd-eyebrow">工资分配记录</span><h2 id="sd-allocation-month-modal-title">选择月份</h2></div>
+          <button class="sd-icon-button" type="button" aria-label="关闭月份选择" data-close-allocation-month-modal><i data-lucide="x" aria-hidden="true"></i></button>
+        </div>
+        <div class="sd-month-choice-grid" data-allocation-month-grid></div>
+      </section>
+    </div>
+
+    <div class="sd-modal-overlay sd-plan-modal-overlay" data-plan-modal aria-hidden="true">
+      <section class="sd-modal sd-plan-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="sd-plan-modal-title">
+        <div class="sd-modal-head">
+          <div class="sd-modal-copy"><h2 id="sd-plan-modal-title">编辑攒钱计划</h2></div>
+          <button class="sd-icon-button" type="button" aria-label="关闭弹窗" data-close-plan-modal><i data-lucide="x" aria-hidden="true"></i></button>
+        </div>
+        <div class="sd-modal-grid">
+          <label class="sd-field"><span class="sd-field-label">计划名称</span><input class="sd-input" type="text" maxlength="24" data-plan-name-input value="自由计划"></label>
+          <label class="sd-field"><span class="sd-field-label">每月打算存</span><input class="sd-input" type="number" min="0" step="100" data-plan-monthly-input value="6000"></label>
+          <label class="sd-field"><span class="sd-field-label">之前已攒金额</span><input class="sd-input" type="number" min="0" step="100" data-plan-current-saved-input value="0"></label>
+          <div class="sd-modal-dates">
+            <label class="sd-field"><span class="sd-field-label">开始月份</span><input class="sd-input" type="month" data-plan-start-input value="2026-01"></label>
+            <label class="sd-field"><span class="sd-field-label">结束月份</span><input class="sd-input" type="month" data-plan-end-input value="2026-12" readonly></label>
+          </div>
+          <p class="sd-modal-error" data-plan-error aria-live="polite"></p>
+          <button class="sd-button sd-full sd-reset-plan-button" type="button" data-reset-plan>重置计划</button>
+          <div class="sd-modal-actions">
+            <button class="sd-button" type="button" data-close-plan-modal>取消</button>
+            <button class="sd-button sd-primary" type="button" data-save-plan>保存计划</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="sd-modal-overlay sd-reset-confirm-overlay" data-reset-confirm-modal aria-hidden="true">
+      <section class="sd-modal" role="alertdialog" aria-modal="true" aria-labelledby="sd-reset-confirm-title" aria-describedby="sd-reset-confirm-description">
+        <div class="sd-modal-head">
+          <div class="sd-modal-copy"><h2 id="sd-reset-confirm-title">确认重置计划？</h2></div>
+        </div>
+        <p class="sd-reset-confirm-copy" id="sd-reset-confirm-description">所有计划设置和每月记录都会清空，重置后无法恢复。</p>
+        <div class="sd-modal-actions">
+          <button class="sd-button" type="button" data-cancel-reset-plan>取消</button>
+          <button class="sd-button sd-confirm-reset-button" type="button" data-confirm-reset-plan>确认重置</button>
+        </div>
+      </section>
+    </div>
+
+    <nav class="sd-bottom-nav" aria-label="主要导航">
+      <button class="sd-nav-button is-active" type="button" data-nav="home"><i data-lucide="house" aria-hidden="true"></i><span>首页</span></button>
+      <button class="sd-nav-button" type="button" data-nav="allocate"><i data-lucide="wallet-cards" aria-hidden="true"></i><span>工资分配</span></button>
+      <button class="sd-nav-button" type="button" data-nav="plan"><i data-lucide="calendar-range" aria-hidden="true"></i><span>年度计划</span></button>
+    </nav>
+    <div class="sd-toast" role="status" aria-live="polite" data-toast>已保存</div>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.getElementById('saving-workbench');
+      const currency = value => `¥${Math.round(Number(value) || 0).toLocaleString('zh-CN')}`;
+      const plainAmount = value => Math.round(Number(value) || 0).toLocaleString('zh-CN');
+      const safeText = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
+      const currentKey = (() => {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      })();
+      const STORAGE_DB = 'saving-workbench';
+      const STORAGE_STORE = 'state';
+      const STORAGE_KEY = 'app-state';
+      const STORAGE_VERSION = 1;
+      let saveTimer;
+      let dbPromise;
+      let editingMonthIndex = 0;
+      let allocationMonthIndex = 0;
+      let plan = { name: '自由计划', start: '2026-01', monthlyTarget: 6000, currentSaved: 0 };
+
+      let months = [
+        { key: '2026-01', target: 6000, saved: 6000, reason: '', extra: 0, note: '' },
+        { key: '2026-02', target: 6000, saved: 5500, reason: '临时牙科治疗', extra: 500, note: '' },
+        { key: '2026-03', target: 6000, saved: 6500, reason: '', extra: 0, note: '' },
+        { key: '2026-04', target: 6000, saved: 6000, reason: '', extra: 0, note: '' },
+        { key: '2026-05', target: 6000, saved: 3000, reason: '更换手机', extra: 3000, note: '' },
+        { key: '2026-06', target: 6000, saved: 7000, reason: '', extra: 0, note: '' },
+        { key: '2026-07', target: 6000, saved: 6000, reason: '', extra: 0, note: '' },
+        { key: '2026-08', target: 6000, saved: 5000, reason: '朋友婚礼红包', extra: 1000, note: '' },
+        { key: '2026-09', target: 6000, saved: 0, reason: '', extra: 0, note: '' },
+        { key: '2026-10', target: 6000, saved: 0, reason: '', extra: 0, note: '' },
+        { key: '2026-11', target: 6000, saved: 0, reason: '', extra: 0, note: '' },
+        { key: '2026-12', target: 6000, saved: 0, reason: '', extra: 0, note: '' }
+      ];
+
+      const defaultCategories = [
+        { name: '攒钱', amount: 6000, savings: true, fixed: true },
+        { name: '自由消费', amount: 1500, savings: false, fixed: true, freeSpending: true },
+        { name: '替尔泊肽用途', amount: 2500, savings: false, fixed: false },
+        { name: '租房', amount: 5000, savings: false, fixed: false }
+      ];
+      const copyObject = value => JSON.parse(JSON.stringify(value));
+      const copyCategories = items => items.map(item => ({ ...item }));
+      const openDb = () => {
+        if (dbPromise) return dbPromise;
+        dbPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(STORAGE_DB, STORAGE_VERSION);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(STORAGE_STORE)) {
+              db.createObjectStore(STORAGE_STORE);
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        return dbPromise;
+      };
+      const loadFromStorage = async () => {
+        try {
+          const db = await openDb();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(STORAGE_STORE, 'readonly');
+            const store = tx.objectStore(STORAGE_STORE);
+            const request = store.get(STORAGE_KEY);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve(request.result || null);
+          });
+        } catch {
+          return null;
+        }
+      };
+      const saveToStorage = async state => {
+        const payload = { ...state, version: STORAGE_VERSION, timestamp: Date.now() };
+        try {
+          const db = await openDb();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(STORAGE_STORE, 'readwrite');
+            const store = tx.objectStore(STORAGE_STORE);
+            const request = store.put(payload, STORAGE_KEY);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => resolve();
+            tx.onerror = () => reject(tx.error);
+          });
+          return true;
+        } catch {
+          return false;
+        }
+      };
+      const scheduleSave = () => {
+        window.clearTimeout(saveTimer);
+        setSyncStatus('syncing');
+        saveTimer = window.setTimeout(async () => {
+          const ok = await saveToStorage(serializeState());
+          setSyncStatus(ok ? 'saved' : 'error');
+          if (!ok) showToast('保存失败');
+        }, 350);
+      };
+      const serializeState = () => ({
+        version: STORAGE_VERSION,
+        plan,
+        months: copyObject(months),
+        timestamp: Date.now()
+      });
+      const normalizeMonth = month => ({
+        key: String(month.key || ''),
+        target: Math.max(0, Math.round(Number(month.target) || 0)),
+        saved: Math.max(0, Math.round(Number(month.saved) || 0)),
+        reason: String(month.reason || ''),
+        extra: Math.max(0, Math.round(Number(month.extra) || 0)),
+        note: String(month.note || ''),
+        salary: Number.isFinite(Number(month.salary)) ? Math.round(Number(month.salary) || 0) : 15000,
+        allocations: month.allocations?.map(item => ({
+          ...item,
+          name: String(item?.name || ''),
+          amount: Math.max(0, Math.round(Number(item?.amount) || 0)),
+          savings: Boolean(item?.savings),
+          fixed: Boolean(item?.fixed),
+          freeSpending: Boolean(item?.freeSpending)
+        }))
+      });
+      const isSavingsCategory = item => Boolean(item?.savings || (item?.name === '攒钱' && item?.locked));
+      const isFreeSpendingCategory = item => Boolean(item?.freeSpending || (item?.name === '自由消费' && item?.fixed));
+      const isFixedCategory = item => Boolean(item?.fixed || isSavingsCategory(item) || isFreeSpendingCategory(item));
+      const recalculateFreeSpending = (items, salary) => {
+        const freeSpending = items.find(isFreeSpendingCategory);
+        if (!freeSpending) return null;
+        const savings = items.find(isSavingsCategory);
+        const otherTotal = items.reduce((sum, item) => {
+          if (item === freeSpending || item === savings) return sum;
+          return sum + (Number(item.amount) || 0);
+        }, 0);
+        freeSpending.amount = Math.max((Number(salary) || 0) - (Number(savings?.amount) || 0) - otherTotal, 0);
+        return { item: freeSpending, index: items.indexOf(freeSpending) };
+      };
+      const syncFreeSpendingInput = (items, salary, monthMode = false) => {
+        const result = recalculateFreeSpending(items, salary);
+        if (!result) return;
+        const attribute = monthMode ? 'data-month-category-amount' : 'data-category-amount';
+        const input = root.querySelector(`[${attribute}="${result.index}"]`);
+        if (input) input.value = result.item.amount;
+      };
+      const restoreState = async () => {
+        const saved = await loadFromStorage();
+        if (saved?.plan && Array.isArray(saved.months)) {
+          plan = { ...plan, ...saved.plan };
+          months = saved.months.map(normalizeMonth);
+          return true;
+        }
+        return false;
+      };
+      const categories = copyCategories(defaultCategories);
+      let editingCategories = [];
+
+      const addMonths = (key, offset) => {
+        const [year, month] = key.split('-').map(Number);
+        const date = new Date(year, month - 1 + offset, 1);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      };
+
+      const monthParts = key => {
+        const [year, month] = key.split('-').map(Number);
+        return { year, month };
+      };
+
+      const monthName = (key, withYear = false) => {
+        const { year, month } = monthParts(key);
+        return withYear ? `${year}年${month}月` : `${month}月`;
+      };
+
+      const planRange = (start = plan.start) => `${monthName(start, true)}—${monthName(addMonths(start, 11), true)}`;
+      const yearTarget = () => plan.currentSaved + months.reduce((sum, month) => sum + month.target, 0);
+      const currentMonthIndex = () => {
+        const exact = months.findIndex(month => month.key === currentKey);
+        if (exact >= 0) return exact;
+        const firstLater = months.findIndex(month => month.key > currentKey);
+        return firstLater < 0 ? months.length - 1 : Math.max(0, firstLater - 1);
+      };
+
+      const makeMonthKeys = start => Array.from({ length: 12 }, (_, index) => addMonths(start, index));
+
+      const showScreen = name => {
+        root.querySelectorAll('.sd-screen').forEach(screen => screen.classList.toggle('is-active', screen.dataset.screen === name));
+        root.querySelectorAll('[data-nav]').forEach(button => button.classList.toggle('is-active', button.dataset.nav === name));
+        root.querySelector('.sd-bottom-nav').classList.remove('is-hidden');
+      };
+
+      const showToast = message => {
+        const toast = root.querySelector('[data-toast]');
+        toast.textContent = message;
+        toast.classList.add('is-showing');
+        window.setTimeout(() => toast.classList.remove('is-showing'), 1500);
+      };
+
+      const setSyncStatus = state => {
+        const status = root.querySelector('[data-sync-status]');
+        const label = root.querySelector('[data-sync-label]');
+        const text = state === 'syncing'
+          ? '保存中…'
+          : state === 'error'
+            ? '保存失败'
+            : '本机已保存';
+        status.dataset.state = state;
+        status.setAttribute('aria-label', `数据${text}`);
+        label.textContent = text;
+      };
+
+      const exportData = () => {
+        const snapshot = serializeState();
+        const text = JSON.stringify(snapshot, null, 2);
+        const blob = new Blob([text], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const date = new Date();
+        link.href = url;
+        link.download = `saving-workbench-backup-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}.json`;
+        link.rel = 'noopener';
+        link.click();
+        URL.revokeObjectURL(url);
+        showToast('备份文件已导出');
+      };
+
+      const importData = async event => {
+        const input = event.target;
+        const file = input.files?.[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          if (!parsed?.plan || !Array.isArray(parsed.months)) {
+            throw new Error('无效备份文件');
+          }
+          if (!window.confirm('导入备份会覆盖当前全部数据，确认继续？')) {
+            input.value = '';
+            return;
+          }
+          plan = { ...plan, ...parsed.plan };
+          months = parsed.months.map(normalizeMonth);
+          editingMonthIndex = currentMonthIndex();
+          allocationMonthIndex = currentMonthIndex();
+          loadAllocationMonth(allocationMonthIndex);
+          renderMonthCategories();
+          renderMonths();
+          renderOverview();
+          input.value = '';
+          const ok = await saveToStorage(serializeState());
+          setSyncStatus(ok ? 'saved' : 'error');
+          showToast(ok ? '备份已导入' : '导入已保存到本机失败');
+        } catch {
+          input.value = '';
+          showToast('备份文件无效');
+          setSyncStatus('error');
+        }
+      };
+
+      const persistNow = async () => {
+        window.clearTimeout(saveTimer);
+        setSyncStatus('syncing');
+        const ok = await saveToStorage(serializeState());
+        setSyncStatus(ok ? 'saved' : 'error');
+        if (!ok) showToast('本机保存失败');
+        return ok;
+      };
+
+      const totalSavedToDate = () => plan.currentSaved + months.filter(month => month.key <= currentKey).reduce((sum, month) => sum + month.saved, 0);
+      const dueToDate = () => plan.currentSaved + months.filter(month => month.key <= currentKey).reduce((sum, month) => sum + month.target, 0);
+
+      const renderOverview = () => {
+        const totalSaved = totalSavedToDate();
+        const due = dueToDate();
+        const year = yearTarget();
+        const yearPercent = year ? Math.min(totalSaved / year * 100, 100) : 0;
+        const shortfall = Math.max(due - totalSaved, 0);
+
+        root.querySelector('[data-home-plan-name]').textContent = plan.name;
+        root.querySelector('[data-home-year-target]').textContent = currency(year);
+        root.querySelector('[data-home-due]').textContent = currency(due);
+        root.querySelector('[data-total-saved]').textContent = currency(totalSaved);
+        root.querySelector('[data-home-gap]').textContent = currency(shortfall);
+        root.querySelector('[data-home-progress]').style.width = `${yearPercent}%`;
+        root.querySelector('[data-home-progress]').parentElement.setAttribute('aria-valuenow', String(Math.round(yearPercent)));
+        const usageTotals = new Map();
+        months.filter(month => month.key <= currentKey).forEach(month => {
+          const allocationItems = month.allocations?.length ? copyCategories(month.allocations) : copyCategories(defaultCategories);
+          const savings = allocationItems.find(isSavingsCategory);
+          if (savings) savings.amount = month.saved;
+          recalculateFreeSpending(allocationItems, month.salary ?? 15000);
+          allocationItems.filter(item => !isSavingsCategory(item)).forEach(item => {
+            const name = item.name || '未命名用途';
+            usageTotals.set(name, (usageTotals.get(name) || 0) + (Number(item.amount) || 0));
+          });
+        });
+        const usageTotal = Array.from(usageTotals.values()).reduce((sum, amount) => sum + amount, 0);
+        root.querySelector('[data-home-usage-summary]').innerHTML = [
+          ...Array.from(usageTotals.entries()).map(([name, amount]) => `<div class="sd-usage-row"><span>${safeText(name)}</span><strong>${currency(amount)}</strong></div>`),
+          `<div class="sd-usage-row sd-usage-total"><span>合计</span><strong>${currency(usageTotal)}</strong></div>`
+        ].join('');
+        root.querySelector('[data-year-target]').textContent = currency(year);
+        root.querySelector('[data-plan-total]').textContent = currency(totalSaved);
+        root.querySelector('[data-plan-remaining]').textContent = currency(Math.max(year - totalSaved, 0));
+        root.querySelector('[data-plan-monthly]').textContent = currency(plan.monthlyTarget);
+        root.querySelector('[data-plan-progress]').style.width = `${yearPercent}%`;
+        root.querySelector('[data-plan-progress]').parentElement.setAttribute('aria-valuenow', String(Math.round(yearPercent)));
+        root.querySelector('[data-plan-range]').textContent = planRange();
+        root.querySelector('[data-plan-target-label]').textContent = '计划总目标';
+      };
+
+      const renderCategories = () => {
+        const list = root.querySelector('[data-category-list]');
+        const savings = categories.find(isSavingsCategory);
+        root.querySelector('[data-savings-amount]').value = savings?.amount || 0;
+        recalculateFreeSpending(categories, root.querySelector('#sd-salary').value);
+        list.innerHTML = categories.map((item, index) => ({ item, index })).filter(({ item }) => !isSavingsCategory(item)).map(({ item, index }) => {
+          const nameField = isFixedCategory(item)
+            ? `<div class="sd-fixed-category-name"><strong>${safeText(item.name)}</strong><small>固定</small></div>`
+            : `<input class="sd-input sd-category-name-input" aria-label="用途名称" type="text" maxlength="12" data-category-name="${index}" value="${safeText(item.name)}">`;
+          const endControl = isFixedCategory(item)
+            ? `<span class="sd-lock-icon" aria-label="${safeText(item.name)}不可删除"><i data-lucide="lock-keyhole" aria-hidden="true"></i></span>`
+            : `<button class="sd-delete-button" type="button" aria-label="删除${safeText(item.name || '用途')}" data-remove-category="${index}"><i data-lucide="trash-2" aria-hidden="true"></i></button>`;
+          return `<div class="sd-category-item">
+            ${nameField}
+            <input class="sd-input sd-category-amount" aria-label="${safeText(item.name || '用途')}金额" type="number" min="0" step="100" data-category-amount="${index}" value="${item.amount}"${isFreeSpendingCategory(item) ? ' readonly aria-readonly="true"' : ''}>
+            ${endControl}
+          </div>`;
+        }).join('');
+        if (window.lucide) window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      };
+
+      const renderMonthCategories = () => {
+        const list = root.querySelector('[data-month-category-list]');
+        const savings = editingCategories.find(isSavingsCategory);
+        root.querySelector('[data-month-savings-amount]').value = savings?.amount || 0;
+        recalculateFreeSpending(editingCategories, root.querySelector('[data-month-salary]').value);
+        list.innerHTML = editingCategories.map((item, index) => ({ item, index })).filter(({ item }) => !isSavingsCategory(item)).map(({ item, index }) => {
+          const nameField = isFixedCategory(item)
+            ? `<div class="sd-fixed-category-name"><strong>${safeText(item.name)}</strong><small>固定</small></div>`
+            : `<input class="sd-input sd-category-name-input" aria-label="用途名称" type="text" maxlength="12" data-month-category-name="${index}" value="${safeText(item.name)}">`;
+          const endControl = isFixedCategory(item)
+            ? `<span class="sd-lock-icon" aria-label="${safeText(item.name)}不可删除"><i data-lucide="lock-keyhole" aria-hidden="true"></i></span>`
+            : `<button class="sd-delete-button" type="button" aria-label="删除${safeText(item.name || '用途')}" data-remove-month-category="${index}"><i data-lucide="trash-2" aria-hidden="true"></i></button>`;
+          return `<div class="sd-category-item">
+            ${nameField}
+            <input class="sd-input sd-category-amount" aria-label="${safeText(item.name || '用途')}金额" type="number" min="0" step="100" data-month-category-amount="${index}" value="${item.amount}"${isFreeSpendingCategory(item) ? ' readonly aria-readonly="true"' : ''}>
+            ${endControl}
+          </div>`;
+        }).join('');
+        if (window.lucide) window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      };
+
+      const allocationCategoriesFor = month => {
+        const source = month.allocations?.length ? month.allocations : defaultCategories;
+        const copied = copyCategories(source);
+        const savings = copied.find(isSavingsCategory) || { name: '攒钱', amount: month.saved, savings: true, fixed: true };
+        savings.name = '攒钱';
+        savings.amount = month.saved;
+        savings.savings = true;
+        savings.fixed = true;
+        const freeSpending = copied.find(isFreeSpendingCategory)
+          || { name: '自由消费', amount: 0, savings: false, fixed: true, freeSpending: true };
+        freeSpending.name = '自由消费';
+        freeSpending.savings = false;
+        freeSpending.fixed = true;
+        freeSpending.freeSpending = true;
+        const result = [
+          savings,
+          freeSpending,
+          ...copied.filter(item => item !== savings && item !== freeSpending && !isSavingsCategory(item))
+        ];
+        recalculateFreeSpending(result, month.salary ?? 15000);
+        return result;
+      };
+
+      const saveAllocationDraft = () => {
+        const month = months[allocationMonthIndex];
+        if (!month) return;
+        month.salary = Number(root.querySelector('#sd-salary').value) || 0;
+        recalculateFreeSpending(categories, month.salary);
+        month.saved = categories.find(isSavingsCategory)?.amount || 0;
+        month.allocations = copyCategories(categories);
+      };
+
+      const renderAllocationMonthPicker = () => {
+        const month = months[allocationMonthIndex];
+        root.querySelector('[data-allocation-month-label]').textContent = monthName(month.key, true);
+        root.querySelector('[data-allocation-prev]').disabled = allocationMonthIndex === 0;
+        root.querySelector('[data-allocation-next]').disabled = allocationMonthIndex === months.length - 1;
+        const crossesYear = monthParts(months[0].key).year !== monthParts(months[months.length - 1].key).year;
+        root.querySelector('[data-allocation-month-grid]').innerHTML = months.map((item, index) => `<button class="sd-month-choice${index === allocationMonthIndex ? ' is-selected' : ''}" type="button" data-allocation-month-index="${index}" aria-pressed="${index === allocationMonthIndex}">${monthName(item.key, crossesYear)}</button>`).join('');
+      };
+
+      const loadAllocationMonth = index => {
+        allocationMonthIndex = Math.max(0, Math.min(months.length - 1, Number(index) || 0));
+        const month = months[allocationMonthIndex];
+        categories.splice(0, categories.length, ...allocationCategoriesFor(month));
+        root.querySelector('#sd-salary').value = month.salary ?? 15000;
+        renderCategories();
+        renderAllocationMonthPicker();
+      };
+
+      const openAllocationMonthModal = () => {
+        renderAllocationMonthPicker();
+        const overlay = root.querySelector('[data-allocation-month-modal]');
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      };
+
+      const closeAllocationMonthModal = () => {
+        const overlay = root.querySelector('[data-allocation-month-modal]');
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      };
+
+      const switchAllocationMonth = index => {
+        saveAllocationDraft();
+        loadAllocationMonth(index);
+        renderMonths();
+        renderOverview();
+      };
+
+      const renderMonths = () => {
+        const list = root.querySelector('[data-month-list]');
+        const crossesYear = monthParts(months[0].key).year !== monthParts(months[months.length - 1].key).year;
+        const currentIndex = months.findIndex(month => month.key === currentKey);
+        let cumulativeSaved = plan.currentSaved;
+        let cumulativeTarget = plan.currentSaved;
+        list.innerHTML = months.map((month, index) => {
+          cumulativeSaved += month.saved;
+          cumulativeTarget += month.target;
+          const tableMonthName = crossesYear ? month.key.replace('-', '/') : monthName(month.key);
+          const isNotStarted = month.key > currentKey;
+          const isBelowTarget = month.saved < month.target;
+          const extraDisplay = isNotStarted
+            ? '<span class="sd-month-amount sd-month-not-started">未开始</span>'
+            : isBelowTarget
+              ? '<span class="sd-month-amount sd-month-extra" aria-label="未达标">！</span>'
+              : '<span class="sd-month-amount sd-month-check" aria-label="已达标">√</span>';
+          const statusAria = isNotStarted ? '未开始' : isBelowTarget ? '未达标' : '已达标';
+          return `<button type="button" class="sd-month-row${index === currentIndex ? ' is-current' : ''}" data-open-month="${month.key}" aria-current="${index === currentIndex ? 'date' : 'false'}" aria-label="${monthName(month.key, true)}，状态${statusAria}，已攒${currency(cumulativeSaved)}，应攒${currency(cumulativeTarget)}，本月实攒${currency(month.saved)}">
+            <strong class="sd-month-label">${tableMonthName}</strong>
+            ${extraDisplay}
+            <span class="sd-month-progress-amount"><span class="sd-month-progress-saved">${plainAmount(cumulativeSaved)}</span><small class="sd-month-progress-target">${plainAmount(cumulativeTarget)}</small></span>
+            <span class="sd-month-amount">${plainAmount(month.saved)}</span>
+          </button>`;
+        }).join('');
+        if (window.lucide) window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      };
+
+      const openMonth = value => {
+        const byKey = months.findIndex(month => month.key === String(value));
+        editingMonthIndex = byKey >= 0 ? byKey : Number(value);
+        const month = months[editingMonthIndex];
+        root.querySelector('[data-edit-month-label]').textContent = monthName(month.key, true);
+        root.querySelector('[data-edit-title]').textContent = `${month.key > currentKey ? '设置' : '补记'}${monthName(month.key)}攒钱`;
+        editingCategories = allocationCategoriesFor(month);
+        root.querySelector('[data-month-salary]').value = month.salary ?? 15000;
+        renderMonthCategories();
+        const overlay = root.querySelector('[data-month-modal]');
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+      };
+
+      const closeMonthModal = () => {
+        const overlay = root.querySelector('[data-month-modal]');
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      };
+
+      const updatePlanLive = () => {
+        const start = root.querySelector('[data-plan-start-input]').value || plan.start;
+        const end = addMonths(start, 11);
+        root.querySelector('[data-plan-end-input]').value = end;
+        root.querySelector('[data-plan-error]').textContent = '';
+      };
+
+      const openPlanModal = () => {
+        root.querySelector('[data-plan-name-input]').value = plan.name;
+        root.querySelector('[data-plan-monthly-input]').value = plan.monthlyTarget;
+        root.querySelector('[data-plan-current-saved-input]').value = plan.currentSaved;
+        root.querySelector('[data-plan-start-input]').value = plan.start;
+        updatePlanLive();
+        const overlay = root.querySelector('[data-plan-modal]');
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        window.setTimeout(() => root.querySelector('[data-plan-name-input]').focus(), 0);
+      };
+
+      const closePlanModal = () => {
+        const overlay = root.querySelector('[data-plan-modal]');
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      };
+
+      const openResetConfirm = () => {
+        const overlay = root.querySelector('[data-reset-confirm-modal]');
+        overlay.classList.add('is-open');
+        overlay.setAttribute('aria-hidden', 'false');
+        window.setTimeout(() => root.querySelector('[data-confirm-reset-plan]').focus(), 0);
+      };
+
+      const closeResetConfirm = () => {
+        const overlay = root.querySelector('[data-reset-confirm-modal]');
+        overlay.classList.remove('is-open');
+        overlay.setAttribute('aria-hidden', 'true');
+      };
+
+      const savePlan = () => {
+        const name = root.querySelector('[data-plan-name-input]').value.trim();
+        const monthly = Math.round(Number(root.querySelector('[data-plan-monthly-input]').value) || 0);
+        const currentSaved = Math.round(Number(root.querySelector('[data-plan-current-saved-input]').value) || 0);
+        const start = root.querySelector('[data-plan-start-input]').value;
+        const error = root.querySelector('[data-plan-error]');
+        if (!name) { error.textContent = '请填写计划名称。'; return; }
+        if (!start) { error.textContent = '请选择开始月份。'; return; }
+        if (monthly <= 0) { error.textContent = '每月计划金额需要大于0。'; return; }
+        if (currentSaved < 0) { error.textContent = '之前已攒金额不能小于0。'; return; }
+
+        const existing = new Map(months.map(month => [month.key, month]));
+        months = makeMonthKeys(start).map(key => {
+          const old = existing.get(key);
+          return {
+            key,
+            target: monthly,
+            saved: old?.saved || 0,
+            reason: old?.reason || '',
+            extra: old?.extra || 0,
+            note: old?.note || '',
+            salary: old?.salary,
+            allocations: old?.allocations ? copyCategories(old.allocations) : undefined
+          };
+        });
+        plan = { name, start, monthlyTarget: monthly, currentSaved };
+        allocationMonthIndex = currentMonthIndex();
+        editingMonthIndex = allocationMonthIndex;
+        loadAllocationMonth(allocationMonthIndex);
+        renderMonths();
+        renderOverview();
+        closePlanModal();
+        scheduleSave();
+        showToast('攒钱计划已更新');
+      };
+
+      const resetPlan = () => {
+        closeResetConfirm();
+        plan = { name: '自由计划', start: currentKey, monthlyTarget: 6000, currentSaved: 0 };
+        months = makeMonthKeys(plan.start).map(key => ({
+          key,
+          target: plan.monthlyTarget,
+          saved: 0,
+          reason: '',
+          extra: 0,
+          note: ''
+        }));
+        allocationMonthIndex = 0;
+        editingMonthIndex = 0;
+        loadAllocationMonth(0);
+        renderMonths();
+        renderOverview();
+        openPlanModal();
+        scheduleSave();
+        showToast('计划数据已重置');
+      };
+
+      root.addEventListener('click', event => {
+        const nav = event.target.closest('[data-nav], [data-go]');
+        if (nav) showScreen(nav.dataset.nav || nav.dataset.go);
+
+        if (event.target.closest('[data-export-data]')) {
+          exportData();
+          return;
+        }
+
+        if (event.target.closest('[data-import-input]')) {
+          return;
+        }
+
+        if (event.target.closest('[data-allocation-prev]')) switchAllocationMonth(allocationMonthIndex - 1);
+        if (event.target.closest('[data-allocation-next]')) switchAllocationMonth(allocationMonthIndex + 1);
+        if (event.target.closest('[data-open-allocation-month-modal]')) openAllocationMonthModal();
+        if (event.target.closest('[data-close-allocation-month-modal]')) closeAllocationMonthModal();
+        if (event.target.matches('[data-allocation-month-modal]')) closeAllocationMonthModal();
+        const allocationMonthChoice = event.target.closest('[data-allocation-month-index]');
+        if (allocationMonthChoice) {
+          switchAllocationMonth(Number(allocationMonthChoice.dataset.allocationMonthIndex));
+          closeAllocationMonthModal();
+        }
+
+        const monthButton = event.target.closest('[data-open-month]');
+        if (monthButton) openMonth(monthButton.dataset.openMonth);
+
+        if (event.target.closest('[data-close-month-modal]')) closeMonthModal();
+        if (event.target.matches('[data-month-modal]')) closeMonthModal();
+
+        if (event.target.closest('[data-open-plan-modal]')) openPlanModal();
+        if (event.target.closest('[data-close-plan-modal]')) closePlanModal();
+        if (event.target.matches('[data-plan-modal]')) closePlanModal();
+        if (event.target.closest('[data-reset-plan]')) openResetConfirm();
+        if (event.target.closest('[data-cancel-reset-plan]')) closeResetConfirm();
+        if (event.target.matches('[data-reset-confirm-modal]')) closeResetConfirm();
+        if (event.target.closest('[data-confirm-reset-plan]')) resetPlan();
+        if (event.target.closest('[data-save-plan]')) savePlan();
+
+        if (event.target.closest('[data-add-category]')) {
+          categories.push({ name: '新用途', amount: 0, savings: false, fixed: false });
+          renderCategories();
+          scheduleSave();
+          const lastName = root.querySelector(`[data-category-name="${categories.length - 1}"]`);
+          if (lastName) { lastName.focus(); lastName.select(); }
+        }
+
+        if (event.target.closest('[data-add-month-category]')) {
+          editingCategories.push({ name: '新用途', amount: 0, savings: false, fixed: false });
+          renderMonthCategories();
+          scheduleSave();
+          const lastName = root.querySelector(`[data-month-category-name="${editingCategories.length - 1}"]`);
+          if (lastName) { lastName.focus(); lastName.select(); }
+        }
+
+        const removeCategory = event.target.closest('[data-remove-category]');
+        if (removeCategory) {
+          const categoryIndex = Number(removeCategory.dataset.removeCategory);
+          if (!isFixedCategory(categories[categoryIndex])) {
+            categories.splice(categoryIndex, 1);
+            renderCategories();
+            scheduleSave();
+          }
+        }
+
+        const removeMonthCategory = event.target.closest('[data-remove-month-category]');
+        if (removeMonthCategory) {
+          const categoryIndex = Number(removeMonthCategory.dataset.removeMonthCategory);
+          if (!isFixedCategory(editingCategories[categoryIndex])) {
+            editingCategories.splice(categoryIndex, 1);
+            renderMonthCategories();
+            scheduleSave();
+          }
+        }
+
+        if (event.target.closest('[data-save-allocation]')) {
+          saveAllocationDraft();
+          const savedMonth = months[allocationMonthIndex];
+          renderMonths();
+          renderOverview();
+          scheduleSave();
+          showToast(`${monthName(savedMonth.key)}分配已保存`);
+        }
+
+        if (event.target.closest('[data-save-month]')) {
+          const month = months[editingMonthIndex];
+          month.salary = Number(root.querySelector('[data-month-salary]').value) || 0;
+          recalculateFreeSpending(editingCategories, month.salary);
+          month.saved = editingCategories.find(isSavingsCategory)?.amount || 0;
+          month.allocations = copyCategories(editingCategories);
+          if (month.key === months[allocationMonthIndex]?.key) {
+            categories.splice(0, categories.length, ...copyCategories(editingCategories));
+            root.querySelector('#sd-salary').value = month.salary;
+            renderCategories();
+          }
+          renderMonths();
+          renderOverview();
+          closeMonthModal();
+          scheduleSave();
+          showToast(`${monthName(month.key)}记录已保存`);
+        }
+      });
+
+      root.addEventListener('input', event => {
+        if (event.target.matches('#sd-salary')) {
+          syncFreeSpendingInput(categories, event.target.value);
+          scheduleSave();
+        }
+        if (event.target.matches('[data-savings-amount]')) {
+          const savings = categories.find(isSavingsCategory);
+          if (savings) savings.amount = Number(event.target.value) || 0;
+          syncFreeSpendingInput(categories, root.querySelector('#sd-salary').value);
+          scheduleSave();
+        }
+        if (event.target.matches('[data-category-name]')) {
+          const index = Number(event.target.dataset.categoryName);
+          categories[index].name = event.target.value;
+          scheduleSave();
+        }
+        if (event.target.matches('[data-category-amount]')) {
+          const index = Number(event.target.dataset.categoryAmount);
+          categories[index].amount = Number(event.target.value) || 0;
+          syncFreeSpendingInput(categories, root.querySelector('#sd-salary').value);
+          scheduleSave();
+        }
+        if (event.target.matches('[data-month-salary]')) {
+          syncFreeSpendingInput(editingCategories, event.target.value, true);
+          scheduleSave();
+        }
+        if (event.target.matches('[data-month-category-name]')) {
+          const index = Number(event.target.dataset.monthCategoryName);
+          editingCategories[index].name = event.target.value;
+          scheduleSave();
+        }
+        if (event.target.matches('[data-month-category-amount]')) {
+          const index = Number(event.target.dataset.monthCategoryAmount);
+          editingCategories[index].amount = Number(event.target.value) || 0;
+          syncFreeSpendingInput(editingCategories, root.querySelector('[data-month-salary]').value, true);
+          scheduleSave();
+        }
+        if (event.target.matches('[data-month-savings-amount]')) {
+          const savings = editingCategories.find(isSavingsCategory);
+          if (savings) savings.amount = Number(event.target.value) || 0;
+          syncFreeSpendingInput(editingCategories, root.querySelector('[data-month-salary]').value, true);
+          scheduleSave();
+        }
+        if (event.target.matches('[data-plan-monthly-input], [data-plan-current-saved-input], [data-plan-start-input]')) updatePlanLive();
+      });
+
+      root.addEventListener('change', event => {
+        if (event.target.matches('[data-import-input]')) {
+          importData(event);
+        }
+      });
+
+      root.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && root.querySelector('[data-plan-modal]').classList.contains('is-open')) closePlanModal();
+        if (event.key === 'Escape' && root.querySelector('[data-month-modal]').classList.contains('is-open')) closeMonthModal();
+        if (event.key === 'Escape' && root.querySelector('[data-allocation-month-modal]').classList.contains('is-open')) closeAllocationMonthModal();
+      });
+
+      const initialize = async () => {
+        const hasSavedData = await restoreState();
+        if (!months.length) {
+          months = makeMonthKeys(plan.start).map(key => ({
+            key,
+            target: plan.monthlyTarget,
+            saved: 0,
+            reason: '',
+            extra: 0,
+            note: ''
+          }));
+        }
+        editingMonthIndex = currentMonthIndex();
+        allocationMonthIndex = editingMonthIndex;
+        loadAllocationMonth(allocationMonthIndex);
+        renderMonths();
+        renderOverview();
+        if (hasSavedData) {
+          setSyncStatus('saved');
+        } else {
+          setSyncStatus('idle');
+          scheduleSave();
+        }
+      };
+
+      window.addEventListener('pagehide', persistNow);
+      initialize().catch(() => {
+        setSyncStatus('error');
+      });
+    })();
+  </script>
+  <script src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js" defer></script>
+  <script>
+    window.addEventListener('load', () => {
+      if (window.lucide) {
+        window.lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+    });
+  </script>
+</div>

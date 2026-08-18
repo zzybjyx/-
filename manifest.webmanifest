@@ -1,0 +1,24 @@
+{
+  "name": "自由计划",
+  "short_name": "自由计划",
+  "start_url": "./saving-workbench-prototype.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#edf4ff",
+  "theme_color": "#246bfd",
+  "description": "工资分配与攒钱计划本地记录",
+  "icons": [
+    {
+      "src": "./icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
